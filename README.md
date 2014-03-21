@@ -14,7 +14,7 @@ Angular Debounce [![Build Status](https://travis-ci.org/shahata/angular-debounce
 
 Install using bower
 
-`bower install --save angular-debounce`
+`bower install --save ng-debounce`
 
 Include script tag in your html document.
 

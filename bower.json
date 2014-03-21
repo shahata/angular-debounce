@@ -1,5 +1,5 @@
 {
-  "name": "angular-debounce",
+  "name": "ng-debounce",
   "version": "0.1.0",
   "main": "./angular-debounce.js",
   "ignore": [
