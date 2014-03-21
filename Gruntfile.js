@@ -1,4 +1,5 @@
-module.exports = function(grunt) {
+'use strict';
+module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-release');
@@ -13,7 +14,7 @@ module.exports = function(grunt) {
         singleRun: true,
         preprocessors: {'*.js': 'coverage'},
         reporters: ['progress', 'coverage'],
-        coverageReporter: {type: 'lcov'}
+        coverageReporter: {dir : 'coverage/', type: 'lcov'}
       },
       dev: {
         background: true
