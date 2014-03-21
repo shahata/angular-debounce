@@ -12,10 +12,10 @@ module.exports = function (config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'app/bower_components/jquery/jquery.js',
-      'app/bower_components/angular/angular.js',
-      'app/bower_components/angular-mocks/angular-mocks.js',
-      'app/bower_components/es5-shim/es5-shim.js',
+      'bower_components/jquery/jquery.js',
+      'bower_components/angular/angular.js',
+      'bower_components/angular-mocks/angular-mocks.js',
+      'bower_components/es5-shim/es5-shim.js',
       'angular-debounce.js',
       'test/**/*.js'
     ],
