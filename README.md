@@ -19,7 +19,7 @@ Install using bower
 Include script tag in your html document.
 
 ```html
-<script type="text/javascript" src="app/bower_components/angular-debounce/angular-debounce.js"></script>
+<script type="text/javascript" src="bower_components/ng-debounce/angular-debounce.js"></script>
 ```
 
 Add a dependency to your application module.
