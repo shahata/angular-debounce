@@ -4,7 +4,7 @@ angular.module('debounce', [])
   .value('now', function () {
     return new Date();
   })
-  .service('debounce', function ($timeout, now) {
+  .service('debounce', ['$timeout', 'now', function ($timeout, now) {
     return function (func, wait, immediate) {
       var timeout, args, context, timestamp, result;
       function debounce() {
@@ -38,8 +38,8 @@ angular.module('debounce', [])
       };
       return debounce;
     };
-  })
-  .directive('debounce', function (debounce) {
+  }])
+  .directive('debounce', ['debounce', function (debounce) {
     return {
       require: 'ngModel',
       priority: 999,
@@ -73,4 +73,4 @@ angular.module('debounce', [])
         });
       }
     };
-  });
+  }]);
