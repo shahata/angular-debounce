@@ -118,6 +118,34 @@ describe('unit testing angular debounce service', function () {
   });
 });
 
+describe('unit testing debounce when using $timeout from angular-mocks', function () {
+  var debounce, $timeout;
+
+  beforeEach(module('debounce'));
+
+  beforeEach(function () {
+    inject(function ($injector) {
+      debounce = $injector.get('debounce');
+      $timeout = $injector.get('$timeout');
+    });
+  });
+
+  it('should not reinitialize debounce after $timeout.flush() even if walltime has not passed', function () {
+    var spy = jasmine.createSpy('debounceFunc');
+    var debounced = debounce(spy, 1000);
+    debounced(1);
+    expect(spy).not.toHaveBeenCalledWith(1);
+    $timeout.flush(100);
+    expect(spy).not.toHaveBeenCalledWith(1);
+    $timeout.flush(900);
+    expect(spy).toHaveBeenCalledWith(1);
+    debounced(2);
+    expect(spy).not.toHaveBeenCalledWith(2);
+    $timeout.flush();
+    expect(spy).toHaveBeenCalledWith(2);
+  });
+});
+
 describe('unit testing angular debounce directive', function () {
   var $compile, $rootScope, element, defer, debounce;
 
