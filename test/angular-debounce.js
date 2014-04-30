@@ -1,4 +1,3 @@
-'use strict';
 
 describe('unit testing angular debounce service', function () {
   var debounce, now;
@@ -6,6 +5,17 @@ describe('unit testing angular debounce service', function () {
   beforeEach(module('debounce'));
 
   beforeEach(function () {
+
+    module(function ($provide) {
+      $provide.decorator('$timeout', function($delegate) {
+        // with debounce own tests it should not recognize that we are 
+        // using mock timeout to be able to test all functionality
+        $delegate.monkey_flush = $delegate.flush;
+        delete $delegate.flush;
+        return $delegate;
+      });
+    });
+
     module(function ($provide) {
       $provide.service('now', function ($timeout) {
         var result = 0;
@@ -14,7 +24,7 @@ describe('unit testing angular debounce service', function () {
         }
         now.flush = function (delay) {
           result += delay;
-          $timeout.flush(delay);
+          $timeout.monkey_flush(delay);
         };
         return now;
       });
