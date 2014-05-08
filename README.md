@@ -57,14 +57,24 @@ e.g. So in tests one could do something like this:
 ```
 it( 'should fire all debounced requests after $timeout.flush()', 
   inject (function ($timeout, debounce) {
-  	var test_fired = false;
-  	var print_alert function () {
-  	  test_fired = true;
+  	var testFired = false;
+  	var printAlert function () {
+  	  testFired = true;
     };
-    debounce(test_fired, 10000);
-    expect( debounce_fired ).toBe(false);
+
+    // flush next few seconds
+    debounce(testFired, 10000);
+    expect( debounceFired ).toBe(false);
+    $timeout.flush(9000);
+    expect( debounceFired ).toBe(false);
+    $timeout.flush(1000);
+    expect( debounceFired ).toBe(true);
+
+    // flush everything
+    testFired = false;
+    debounce(testFired, 100);
     $timeout.flush();
-    expect( debounce_fired ).toBe(true);
+    expect( debounceFired ).toBe(true);
   })
 );
 ``` 

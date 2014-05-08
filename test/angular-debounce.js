@@ -10,7 +10,7 @@ describe('unit testing angular debounce service', function () {
       $provide.decorator('$timeout', function($delegate) {
         // with debounce own tests it should not recognize that we are 
         // using mock timeout to be able to test all functionality
-        $delegate.monkey_flush = $delegate.flush;
+        $delegate.monkeyFlush = $delegate.flush;
         delete $delegate.flush;
         return $delegate;
       });
@@ -24,7 +24,7 @@ describe('unit testing angular debounce service', function () {
         }
         now.flush = function (delay) {
           result += delay;
-          $timeout.monkey_flush(delay);
+          $timeout.monkeyFlush(delay);
         };
         return now;
       });
