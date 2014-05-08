@@ -1,4 +1,3 @@
-'use strict';
 
 describe('unit testing angular debounce service', function () {
   var debounce, now;
@@ -6,6 +5,17 @@ describe('unit testing angular debounce service', function () {
   beforeEach(module('debounce'));
 
   beforeEach(function () {
+
+    module(function ($provide) {
+      $provide.decorator('$timeout', function($delegate) {
+        // with debounce own tests it should not recognize that we are 
+        // using mock timeout to be able to test all functionality
+        $delegate.monkeyFlush = $delegate.flush;
+        delete $delegate.flush;
+        return $delegate;
+      });
+    });
+
     module(function ($provide) {
       $provide.service('now', function ($timeout) {
         var result = 0;
@@ -14,7 +24,7 @@ describe('unit testing angular debounce service', function () {
         }
         now.flush = function (delay) {
           result += delay;
-          $timeout.flush(delay);
+          $timeout.monkeyFlush(delay);
         };
         return now;
       });
@@ -104,6 +114,34 @@ describe('unit testing angular debounce service', function () {
     expect(spy).toHaveBeenCalledWith(1);
     debounced.cancel();
     debounced(2);
+    expect(spy).toHaveBeenCalledWith(2);
+  });
+});
+
+describe('unit testing debounce when using $timeout from angular-mocks', function () {
+  var debounce, $timeout;
+
+  beforeEach(module('debounce'));
+
+  beforeEach(function () {
+    inject(function ($injector) {
+      debounce = $injector.get('debounce');
+      $timeout = $injector.get('$timeout');
+    });
+  });
+
+  it('should not reinitialize debounce after $timeout.flush() even if walltime has not passed', function () {
+    var spy = jasmine.createSpy('debounceFunc');
+    var debounced = debounce(spy, 1000);
+    debounced(1);
+    expect(spy).not.toHaveBeenCalledWith(1);
+    $timeout.flush(100);
+    expect(spy).not.toHaveBeenCalledWith(1);
+    $timeout.flush(900);
+    expect(spy).toHaveBeenCalledWith(1);
+    debounced(2);
+    expect(spy).not.toHaveBeenCalledWith(2);
+    $timeout.flush();
     expect(spy).toHaveBeenCalledWith(2);
   });
 });

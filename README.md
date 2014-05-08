@@ -46,6 +46,39 @@ A debounced version of the passed function. Any arguments passed to this functio
 
 The returned function also has a `cancel()` method which can be used in case you what to reset the current debounce state. This will prevent the function from being triggered even after **wait** miliseconds have passed from last input. In case **immediate** is `true`, this means that the next user input will trigger the debounce.
 
+### Writing tests for code using `debounce()`
+
+When writing tests for code that uses `$timeout` one uses `$timeout.flush()` from `angular-mocks.js` to force timeout to trigger in tests without unnecessary waiting.
+
+For testing debounced functionality same trick works. Debounce checks if `$timeout.flush()` method exists and in that case it will not initialize new `$timeout` event even if enough wall time has not passed. 
+
+e.g. So in tests one could do something like this:
+
+```
+it( 'should fire all debounced requests after $timeout.flush()', 
+  inject (function ($timeout, debounce) {
+  	var testFired = false;
+  	var printAlert function () {
+  	  testFired = true;
+    };
+
+    // flush next few seconds
+    debounce(testFired, 10000);
+    expect( debounceFired ).toBe(false);
+    $timeout.flush(9000);
+    expect( debounceFired ).toBe(false);
+    $timeout.flush(1000);
+    expect( debounceFired ).toBe(true);
+
+    // flush everything
+    testFired = false;
+    debounce(testFired, 100);
+    $timeout.flush();
+    expect( debounceFired ).toBe(true);
+  })
+);
+``` 
+
 ## Directive Usage
 
 ```html

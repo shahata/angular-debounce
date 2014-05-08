@@ -14,7 +14,7 @@ angular.module('debounce', [])
         timestamp = now();
         var later = function () {
           var last = now() - timestamp;
-          if (last < wait) {
+          if (last < wait && !$timeout.flush) {
             timeout = $timeout(later, wait - last);
           } else {
             timeout = null;
