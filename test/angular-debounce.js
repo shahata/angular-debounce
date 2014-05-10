@@ -1,28 +1,14 @@
 'use strict';
 
 describe('unit testing angular debounce service', function () {
-  var debounce, now;
+  var debounce, $timeout;
 
   beforeEach(module('debounce'));
 
   beforeEach(function () {
-    module(function ($provide) {
-      $provide.service('now', function ($timeout) {
-        var result = 0;
-        function now() {
-          return result;
-        }
-        now.flush = function (delay) {
-          result += delay;
-          $timeout.flush(delay);
-        };
-        return now;
-      });
-    });
-
-    inject(function ($injector) {
-      debounce = $injector.get('debounce');
-      now = $injector.get('now');
+    inject(function (_debounce_, _$timeout_) {
+      debounce = _debounce_;
+      $timeout = _$timeout_;
     });
   });
 
@@ -30,7 +16,7 @@ describe('unit testing angular debounce service', function () {
     var spy = jasmine.createSpy('debounceFunc');
     debounce(spy, 100)();
     expect(spy).not.toHaveBeenCalled();
-    now.flush(100);
+    $timeout.flush(100);
     expect(spy).toHaveBeenCalled();
   });
 
@@ -38,11 +24,11 @@ describe('unit testing angular debounce service', function () {
     var spy = jasmine.createSpy('debounceFunc');
     var debounced = debounce(spy, 100);
     debounced();
-    now.flush(99);
+    $timeout.flush(99);
     debounced();
-    now.flush(99);
+    $timeout.flush(99);
     expect(spy).not.toHaveBeenCalled();
-    now.flush(1);
+    $timeout.flush(1);
     expect(spy).toHaveBeenCalled();
   });
 
@@ -52,7 +38,7 @@ describe('unit testing angular debounce service', function () {
     debounced(1);
     debounced(2);
     debounced(3);
-    now.flush(100);
+    $timeout.flush(100);
     expect(spy.calls.length).toEqual(1);
     expect(spy).toHaveBeenCalledWith(3);
   });
@@ -62,7 +48,7 @@ describe('unit testing angular debounce service', function () {
     var spy2 = jasmine.createSpy('debounceFunc2');
     debounce(spy, 100)(1);
     debounce(spy2, 100)(2);
-    now.flush(100);
+    $timeout.flush(100);
     expect(spy).toHaveBeenCalledWith(1);
     expect(spy2).toHaveBeenCalledWith(2);
   });
@@ -71,7 +57,7 @@ describe('unit testing angular debounce service', function () {
     var spy =  jasmine.createSpy('debounceFunc').andCallFake(angular.identity);
     var debounced = debounce(spy, 100);
     expect(debounced(1)).toEqual(undefined);
-    now.flush(100);
+    $timeout.flush(100);
     expect(debounced(2)).toEqual(1);
   });
 
@@ -82,7 +68,7 @@ describe('unit testing angular debounce service', function () {
     debounced(2);
     debounced(3);
     expect(spy).toHaveBeenCalledWith(1);
-    now.flush(100);
+    $timeout.flush(100);
     expect(spy.calls.length).toEqual(1);
     debounced(2);
     expect(spy).toHaveBeenCalledWith(2);
@@ -93,7 +79,7 @@ describe('unit testing angular debounce service', function () {
     var debounced = debounce(spy, 100);
     debounced();
     debounced.cancel();
-    now.flush(100);
+    $timeout.flush(100);
     expect(spy).not.toHaveBeenCalled();
   });
 

@@ -1,32 +1,24 @@
 'use strict';
 
 angular.module('debounce', [])
-  .value('now', function () {
-    return new Date();
-  })
-  .service('debounce', ['$timeout', 'now', function ($timeout, now) {
+  .service('debounce', ['$timeout', function ($timeout) {
     return function (func, wait, immediate) {
-      var timeout, args, context, timestamp, result;
+      var timeout, args, context, result;
       function debounce() {
         /* jshint validthis:true */
         context = this;
         args = arguments;
-        timestamp = now();
         var later = function () {
-          var last = now() - timestamp;
-          if (last < wait) {
-            timeout = $timeout(later, wait - last);
-          } else {
-            timeout = null;
-            if (!immediate) {
-              result = func.apply(context, args);
-            }
+          timeout = null;
+          if (!immediate) {
+            result = func.apply(context, args);
           }
         };
         var callNow = immediate && !timeout;
-        if (!timeout) {
-          timeout = $timeout(later, wait);
+        if (timeout) {
+          $timeout.cancel(timeout);
         }
+        timeout = $timeout(later, wait);
         if (callNow) {
           result = func.apply(context, args);
         }
