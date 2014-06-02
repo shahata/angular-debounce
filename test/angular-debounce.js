@@ -39,7 +39,7 @@ describe('unit testing angular debounce service', function () {
     debounced(2);
     debounced(3);
     $timeout.flush(100);
-    expect(spy.calls.length).toEqual(1);
+    expect(spy.calls.count()).toEqual(1);
     expect(spy).toHaveBeenCalledWith(3);
   });
 
@@ -54,7 +54,7 @@ describe('unit testing angular debounce service', function () {
   });
 
   it('should return the value from the last debounce', function () {
-    var spy =  jasmine.createSpy('debounceFunc').andCallFake(angular.identity);
+    var spy =  jasmine.createSpy('debounceFunc').and.callFake(angular.identity);
     var debounced = debounce(spy, 100);
     expect(debounced(1)).toEqual(undefined);
     $timeout.flush(100);
@@ -69,7 +69,7 @@ describe('unit testing angular debounce service', function () {
     debounced(3);
     expect(spy).toHaveBeenCalledWith(1);
     $timeout.flush(100);
-    expect(spy.calls.length).toEqual(1);
+    expect(spy.calls.count()).toEqual(1);
     debounced(2);
     expect(spy).toHaveBeenCalledWith(2);
   });
@@ -103,7 +103,7 @@ describe('unit testing angular debounce directive', function () {
     defer = null;
     module(function ($provide) {
       $provide.service('debounce', function ($q) {
-        debounce = jasmine.createSpy('debounce').andCallFake(function (func) {
+        debounce = jasmine.createSpy('debounce').and.callFake(function (func) {
           /* jshint validthis:true */
           function debounced() {
             var args = arguments;
@@ -191,3 +191,4 @@ describe('unit testing angular debounce directive', function () {
   });
 
 });
+
