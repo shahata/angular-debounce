@@ -2,10 +2,13 @@
 module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-connect');
+  grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-release');
   grunt.loadNpmTasks('grunt-karma');
 
   grunt.initConfig({
+		pkg: grunt.file.readJSON('package.json'),
     karma: {
       options: {
         configFile: 'karma.conf.js'
@@ -29,12 +32,30 @@ module.exports = function (grunt) {
       server: {
       }
     },
+		jshint: {
+      src: {
+        options: {
+          jshintrc: '.jshintrc'
+        },
+        files: {
+          src: ['src/*.js']
+        }
+      },
+      test: {
+        options: {
+          jshintrc: 'test/.jshintrc'
+        },
+        files: {
+          src: ['test/*.js']
+        }
+      }
+		},
     watch: {
       options: {
         livereload: true
       },
       tests: {
-        files: ['*.js', 'test/**/*.js', '{demo,css,images}/*.*'],
+        files: ['src/*.js', 'test/**/*.js', '{demo,css,images}/*.*'],
         tasks: ['karma:dev:run']
       }
     },
@@ -43,8 +64,27 @@ module.exports = function (grunt) {
         file: 'bower.json',
         npm: false
       }
-    }
+    },
+		uglify: {
+			dist: {
+				options: {
+					banner: ['/*',
+						' * <%= pkg.name %>',
+						' * <%= pkg.homepage %>',
+						' *',
+						' * @version: <%= pkg.version %>',
+						' * @license: <%= pkg.license %>',
+						' */\n'
+					].join('\n')
+				},
+				files: {
+					'dist/angular-debounce.min.js': ['src/angular-debounce.js']
+				}
+			}
+		}
   });
+
+  grunt.registerTask('default', ['jshint', 'karma:ci', 'uglify']);
 
   //run tests only once (continuous integration mode)
   grunt.registerTask('test', ['karma:ci']);
