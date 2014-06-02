@@ -5,10 +5,11 @@ Angular Debounce [![Build Status](https://travis-ci.org/shahata/angular-debounce
 
 ## What it does
 
-1. Service - Creates and returns a new debounced version of the passed function which will postpone its execution until after **wait** milliseconds have elapsed since the last time it was invoked. Useful for implementing behavior that should only happen *after* the input has stopped arriving. For example: recalculating a layout after the window has stopped being resized.
+1. Debounce Service - Creates and returns a new debounced version of the passed function which will postpone its execution until after **wait** milliseconds have elapsed since the last time it was invoked. Useful for implementing behavior that should only happen *after* the input has stopped arriving. For example: recalculating a layout after the window has stopped being resized.
 
-2. Directive - Can be added to any element with an ng-model attribute and postpone model updates by user input until after **wait** milliseconds have elapsed since the last user input. Useful for watchers that should only be invoked *after* the input has stopped arriving. For example: rendering a preview of a Markdown comment.
+2. Throttle Service - Creates and returns a new throttled version of the passed function that when called repetitively, executes the original function (in the same context and with all arguments passed through) no more than once every delay milliseconds.
 
+3. Directive - Can be added to any element with an ng-model attribute and postpone model updates by user input until after **wait** milliseconds have elapsed since the last user input. Useful for watchers that should only be invoked *after* the input has stopped arriving. For example: rendering a preview of a Markdown comment.
 
 ## Installation
 
@@ -25,10 +26,10 @@ Include script tag in your html document.
 Add a dependency to your application module.
 
 ```javascript
-angular.module('myApp', ['debounce']);
+angular.module('myApp', ['debounce', 'throttle']);
 ```
 
-## Service Usage
+## Debounce Service Usage
 
 `debounce(func, wait, [immediate])`
 
@@ -45,6 +46,23 @@ angular.module('myApp', ['debounce']);
 A debounced version of the passed function. Any arguments passed to this function will be also passed to the passed function in case this invocation will trigger the function.
 
 The returned function also has a `cancel()` method which can be used in case you what to reset the current debounce state. This will prevent the function from being triggered even after **wait** miliseconds have passed from last input. In case **immediate** is `true`, this means that the next user input will trigger the debounce.
+
+## Throttle Service Usage
+
+`throttle(func, wait)`
+
+### Arguments
+
+|Param|Type|Details|
+|---|---|
+|func|function|The function we want to **throttle**|
+|wait|number|Number of miliseconds to **wait** before invoking the throttled function|
+
+### Returns
+
+A throttled version of the passed function. Any arguments passed to this function will be also passed to the passed function in case this invocation will trigger the function.
+
+The returned function also has a `cancel()` method which can be used in case you what to reset the current throttle state. This will prevent the function from being triggered even after **wait** miliseconds have passed from last input. 
 
 ## Directive Usage
 

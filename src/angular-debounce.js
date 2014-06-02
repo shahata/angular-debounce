@@ -31,6 +31,48 @@ angular.module('debounce', [])
       return debounce;
     };
   }])
+  .service('throttle', ['$timeout', 'debounce', function($timeout, debounce) {
+    return function(func, wait) {
+      var context, args, timeout, throttling, more, result;
+
+      var whenDone = debounce(function() {
+        more = throttling = false;
+      }, wait);
+
+      function throttle() {
+        /* jshint validthis:true */
+        context = this;
+        args = arguments;
+
+        var later = function() {
+          timeout = null;
+          if (more) {
+            func.apply(context, args);
+          }
+
+          whenDone();
+        };
+        if (!timeout) {
+          timeout = $timeout(later, wait);
+        }
+        if (throttling) {
+          more = true;
+        } else {
+          result = func.apply(context, args);
+        }
+        whenDone();
+        throttling = true;
+
+        return result;
+      }
+      throttle.cancel = function () {
+        $timeout.cancel(timeout);
+        timeout = null;
+      };
+
+      return throttle;
+    };
+  }])
   .directive('debounce', ['debounce', function (debounce) {
     return {
       require: 'ngModel',

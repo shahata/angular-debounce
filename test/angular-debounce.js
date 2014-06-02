@@ -189,6 +189,69 @@ describe('unit testing angular debounce directive', function () {
     element = $compile('<input type="text" ng-model="blah" debounce="100" immediate="true"></input>')($rootScope);
     expect(debounce).toHaveBeenCalledWith(jasmine.any(Function), 100, true);
   });
-
 });
 
+describe('Unit test throttle service', function() {
+  var throttle, $timeout;
+
+  beforeEach(module('debounce'));
+
+  beforeEach(function () {
+    inject(function (_throttle_, _$timeout_) {
+      throttle = _throttle_;
+      $timeout = _$timeout_;
+    });
+  });
+
+  it('should invoke callback at specified delay', function () {
+    var spy = jasmine.createSpy('throttleFunc');
+    expect(spy).not.toHaveBeenCalled();
+    var t = throttle(spy, 200);
+
+    t();
+
+    expect(spy.calls.count()).toBe(1);
+
+    t();
+    t();
+    t();
+    t();
+
+    $timeout.flush(100);
+    expect(spy.calls.count()).toBe(1);
+
+    $timeout.flush(120);
+    expect(spy.calls.count()).toBe(2);
+    $timeout.flush();
+  });
+
+  it('should be able to create multiple unrelated debouncers', function () {
+    var spy = jasmine.createSpy('throttleFunc');
+    var spy2 = jasmine.createSpy('throttleFunc2');
+    throttle(spy, 100)(1);
+    throttle(spy2, 100)(2);
+    $timeout.flush(100);
+    expect(spy).toHaveBeenCalledWith(1);
+    expect(spy2).toHaveBeenCalledWith(2);
+  });
+
+  it('should return the value from the last throttle', function () {
+    var spy =  jasmine.createSpy('throttleFunc').and.callFake(angular.identity);
+    var throttled = throttle(spy, 100);
+    expect(throttled(1)).toEqual(1);
+    $timeout.flush(100);
+    expect(throttled(2)).toEqual(1);
+  });
+
+  it('should support canceling of throttle, returning triggers to default state', function () {
+    var spy = jasmine.createSpy('throttleFunc');
+    var t = throttle(spy, 100);
+    t();
+    expect(spy.calls.count()).toBe(1);
+    t.cancel();
+    expect(spy.calls.count()).toBe(1);
+    $timeout.flush(100);
+    expect(spy.calls.count()).toBe(1);
+  });
+
+});
