@@ -17,7 +17,7 @@ module.exports = function (config) {
       'bower_components/angular-mocks/angular-mocks.js',
       'bower_components/es5-shim/es5-shim.js',
       'src/angular-debounce.js',
-      'test/**/*.js'
+      'test/*.js'
     ],
 
     // list of files / patterns to exclude

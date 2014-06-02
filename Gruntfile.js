@@ -15,7 +15,7 @@ module.exports = function (grunt) {
       },
       ci: {
         singleRun: true,
-        preprocessors: {'*.js': 'coverage'},
+        preprocessors: {'src/*.js': 'coverage'},
         reporters: ['progress', 'coverage'],
         coverageReporter: {dir : 'coverage/', type: 'lcov'}
       },
