@@ -8,7 +8,7 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-karma');
 
   grunt.initConfig({
-		pkg: grunt.file.readJSON('package.json'),
+    pkg: grunt.file.readJSON('package.json'),
     karma: {
       options: {
         configFile: 'karma.conf.js'
@@ -32,13 +32,13 @@ module.exports = function (grunt) {
       server: {
       }
     },
-		jshint: {
+    jshint: {
       src: {
         options: {
           jshintrc: '.jshintrc'
         },
         files: {
-          src: ['src/*.js']
+          src: ['src/*.js', 'Gruntfile.js']
         }
       },
       test: {
@@ -49,7 +49,7 @@ module.exports = function (grunt) {
           src: ['test/*.js']
         }
       }
-		},
+    },
     watch: {
       options: {
         livereload: true
@@ -65,23 +65,23 @@ module.exports = function (grunt) {
         npm: false
       }
     },
-		uglify: {
-			dist: {
-				options: {
-					banner: ['/*',
-						' * <%= pkg.name %>',
-						' * <%= pkg.homepage %>',
-						' *',
-						' * @version: <%= pkg.version %>',
-						' * @license: <%= pkg.license %>',
-						' */\n'
-					].join('\n')
-				},
-				files: {
-					'dist/angular-debounce.min.js': ['src/angular-debounce.js']
-				}
-			}
-		}
+    uglify: {
+      dist: {
+        options: {
+          banner: ['/*',
+            ' * <%= pkg.name %>',
+            ' * <%= pkg.homepage %>',
+            ' *',
+            ' * @version: <%= pkg.version %>',
+            ' * @license: <%= pkg.license %>',
+            ' */\n'
+            ].join('\n')
+          },
+        files: {
+          'dist/angular-debounce.min.js': ['src/angular-debounce.js']
+        }
+      }
+    }
   });
 
   grunt.registerTask('default', ['jshint', 'karma:ci', 'uglify']);
