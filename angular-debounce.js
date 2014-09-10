@@ -31,22 +31,20 @@ angular.module('debounce', [])
       return debounce;
     };
   }])
-  .directive('debounce', ['debounce', function (debounce) {
+  .directive('debounce', ['debounce', '$parse', function (debounce, $parse) {
     return {
       require: 'ngModel',
       priority: 999,
-      scope: {
-        debounce: '@',
-        immediate: '@'
-      },
       link: function ($scope, $element, $attrs, ngModelController) {
+        var debounceDuration = $parse($attrs.debounce)($scope);
+        var immediate = !!$parse($attrs.immediate)($scope);
         var debouncedValue, pass;
         var prevRender = ngModelController.$render.bind(ngModelController);
         var commitSoon = debounce(function (viewValue) {
           pass = true;
           ngModelController.$setViewValue(viewValue);
           pass = false;
-        }, parseInt($scope.debounce), $scope.immediate === 'true');
+        }, parseInt(debounceDuration, 10), immediate);
         ngModelController.$render = function () {
           prevRender();
           commitSoon.cancel();
