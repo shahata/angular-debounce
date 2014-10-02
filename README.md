@@ -30,7 +30,11 @@ angular.module('myApp', ['debounce']);
 
 ## Service Usage
 
-`debounce(func, wait, [immediate])`
+```
+function($scope, ..., debounce) {
+  debounce(func, wait, [immediate])();
+}
+```
 
 ### Arguments
 
