@@ -42,6 +42,7 @@ angular.module('debounce', [])
         var prevRender = ngModelController.$render.bind(ngModelController);
         var commitSoon = debounce(function (viewValue) {
           pass = true;
+          ngModelController.$$lastCommittedViewValue = debouncedValue;
           ngModelController.$setViewValue(viewValue);
           pass = false;
         }, parseInt(debounceDuration, 10), immediate);
