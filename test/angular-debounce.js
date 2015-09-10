@@ -94,6 +94,37 @@ describe('unit testing angular debounce service', function () {
   });
 });
 
+describe('Calling $timeout with invokeApply', function () {
+  var mocks = {};
+  var $timeout, debounce;
+
+  angular.module('TimeoutMockModule', []).factory('$timeout', function(){
+    $timeout = jasmine.createSpy();
+    $timeout.cancel = jasmine.createSpy();
+    mocks.$timeout = $timeout;
+    return $timeout;
+  });
+
+  beforeEach(module('debounce', 'TimeoutMockModule'));
+  beforeEach(inject(function (_debounce_, _$timeout_) {
+    debounce = _debounce_;
+    $timeout = _$timeout_;
+  }));
+
+  it('should support calling $timeout with correct invokeApply parameter', function () {
+    var func = function () {};
+    var debounced = debounce(func, 100, false, true);
+    debounced();
+    expect(mocks.$timeout).toHaveBeenCalledWith(jasmine.any(Function), 100, true);
+    debounced = debounce(func, 100, false, false);
+    debounced();
+    expect(mocks.$timeout).toHaveBeenCalledWith(jasmine.any(Function), 100, false);
+    debounced = debounce(func, 100);
+    debounced();
+    expect(mocks.$timeout).toHaveBeenCalledWith(jasmine.any(Function), 100, undefined);
+  });
+});
+
 describe('unit testing angular debounce directive', function () {
   var $compile, $rootScope, element, defer, debounce;
 
@@ -171,7 +202,7 @@ describe('unit testing angular debounce directive', function () {
   });
 
   it('should live well with other parsers', function () {
-    element = $compile('<input type="checkbox" ng-model="blah" debounce="100" ng-true-value="YES" ng-false-value="NO"></input>')($rootScope);
+    element = $compile('<input type="checkbox" ng-model="blah" debounce="100" ng-true-value="\'YES\'" ng-false-value="\'NO\'"></input>')($rootScope);
     $rootScope.blah = 'YES';
     $rootScope.$digest();
     element.click();

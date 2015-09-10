@@ -30,7 +30,7 @@ angular.module('myApp', ['debounce']);
 
 ## Service Usage
 
-`debounce(func, wait, [immediate])`
+`debounce(func, wait, [immediate], [invokeApply])`
 
 ### Arguments
 
@@ -39,6 +39,7 @@ angular.module('myApp', ['debounce']);
 |func|function|The function we want to **debounce**|
 |wait|number|Number of miliseconds to **wait** before invoking the debounced function|
 |immediate (optional)|boolean|Pass `true` for the **immediate** parameter to cause **debounce** to trigger the function on the leading instead of the trailing edge of the **wait** interval. Useful in circumstances like preventing accidental double-clicks on a "submit" button from firing a second time.|
+|invokeApply (optional)|boolean|`invokeApply` param passed to `$timeout` service (defines whether apply should be called in order to trigger a digest cycle at the end of the `func` call) - see [$timeout](https://docs.angularjs.org/api/ng/service/$timeout) service for more details|
 
 ### Returns
 
