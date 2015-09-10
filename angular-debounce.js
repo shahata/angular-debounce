@@ -2,7 +2,7 @@
 
 angular.module('debounce', [])
   .service('debounce', ['$timeout', function ($timeout) {
-    return function (func, wait, immediate) {
+    return function (func, wait, immediate, invokeApply) {
       var timeout, args, context, result;
       function debounce() {
         /* jshint validthis:true */
@@ -18,7 +18,7 @@ angular.module('debounce', [])
         if (timeout) {
           $timeout.cancel(timeout);
         }
-        timeout = $timeout(later, wait);
+        timeout = $timeout(later, wait, invokeApply);
         if (callNow) {
           result = func.apply(context, args);
         }
