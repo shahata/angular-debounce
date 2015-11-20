@@ -12,11 +12,11 @@ angular.module('debounce', [])
           timeout = null;
           if (!immediate) {
             if(!funcInRunning){						
-  						funcInRunning = sync;						
-  						result = func.apply(context, args);
-  					} else {
-  						timeout = $timeout(later, wait, invokeApply);
-  					}
+  		funcInRunning = sync;						
+  		result = func.apply(context, args);
+  	    } else {
+  		timeout = $timeout(later, wait, invokeApply);
+  	    }
           }
         };
         var callNow = immediate && !timeout && !funcInRunning;
