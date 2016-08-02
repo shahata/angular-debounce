@@ -64,7 +64,7 @@ etc.
 
 ## Reference
 
-The debounce service is based on the debounce implementation in uderscorejs
+The debounce service is based on the debounce implementation in underscorejs
 * underscorejs: http://underscorejs.org/#debounce
 
 ## License
