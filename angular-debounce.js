@@ -2,8 +2,8 @@
 
 angular.module('debounce', [])
   .service('debounce', ['$timeout', function ($timeout) {
-    return function (func, wait, immediate, invokeApply) {
-      var timeout, args, context, result;
+    return function (func, wait, immediate, invokeApply, sync) {
+      var timeout, args, context, result, funcInRunning;
       function debounce() {
         /* jshint validthis:true */
         context = this;
@@ -11,15 +11,21 @@ angular.module('debounce', [])
         var later = function () {
           timeout = null;
           if (!immediate) {
-            result = func.apply(context, args);
+            if(!funcInRunning){						
+  		funcInRunning = sync;						
+  		result = func.apply(context, args);
+  	    } else {
+  		timeout = $timeout(later, wait, invokeApply);
+  	    }
           }
         };
-        var callNow = immediate && !timeout;
+        var callNow = immediate && !timeout && !funcInRunning;
         if (timeout) {
           $timeout.cancel(timeout);
         }
         timeout = $timeout(later, wait, invokeApply);
         if (callNow) {
+          funcInRunning = sync;
           result = func.apply(context, args);
         }
         return result;
@@ -28,6 +34,9 @@ angular.module('debounce', [])
         $timeout.cancel(timeout);
         timeout = null;
       };
+      debounce.endPromise = function() {
+			funcInRunning = false;
+		  };
       return debounce;
     };
   }])
