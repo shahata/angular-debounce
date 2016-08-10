@@ -1,7 +1,7 @@
-'use strict';
-
 angular.module('debounce', [])
   .service('debounce', ['$timeout', function ($timeout) {
+    'use strict';
+
     return function (func, wait, immediate, invokeApply) {
       var timeout, args, context, result;
       function debounce() {
@@ -32,6 +32,8 @@ angular.module('debounce', [])
     };
   }])
   .directive('debounce', ['debounce', '$parse', function (debounce, $parse) {
+    'use strict';
+
     return {
       require: 'ngModel',
       priority: 999,
